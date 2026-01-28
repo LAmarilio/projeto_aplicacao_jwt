@@ -4,13 +4,14 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserResponse;
+import com.example.demo.exception.InvalidCredentialsException;
 import com.example.demo.exception.UserAlreadyExistsException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.exception.ValidationException;
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +33,26 @@ public class UserService {
         return dto;
     }
 
-    public UserResponse createUser(UserRequest dto) {
+    public void verifyRequest(UserRequest dto) {
+        if (dto.getFullName() == null ||
+                dto.getEmail() == null ||
+                dto.getPassword() == null ||
+                dto.getRole() == null
+        ) {
+            throw new InvalidCredentialsException("As informações enviadas estão incorretas! Foram recusadas pelo servidor!");
+        }
+
+        if (dto.getRole() != Role.ADMIN && dto.getRole() != Role.USER) {
+            throw new InvalidCredentialsException("Role deve ser ADMIN ou USER, qualquer outra resposta será recusada.");
+        }
+
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new UserAlreadyExistsException("Já existe um usuário com este e-mail");
         }
+    }
+
+    public UserResponse createUser(UserRequest dto) {
+        verifyRequest(dto);
         User user = new User();
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
