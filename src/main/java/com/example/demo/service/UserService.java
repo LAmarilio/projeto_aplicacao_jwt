@@ -5,8 +5,11 @@ import com.example.demo.dto.LoginResponse;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserResponse;
 import com.example.demo.exception.UserAlreadyExistsException;
+import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,5 +45,17 @@ public class UserService {
         User saved = userRepository.save(user);
 
         return toResponse(saved);
+    }
+
+    public LoginResponse effectiveLogin(LoginRequest dto) {
+        User user = userRepository.findUserByEmail(dto.getEmail());
+        if (user != null && passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            LoginResponse res = new LoginResponse(user.getId(), user.getFullName(), JwtUtil.generateToken(user.getEmail(), user.getRole()));
+            return res;
+        } else if (user != null) {
+            throw new ValidationException("A senha não coincide com a registrada!");
+        } else {
+            throw new UserNotFoundException("O usuário com este e-mail não foi localizado.");
+        }
     }
 }
