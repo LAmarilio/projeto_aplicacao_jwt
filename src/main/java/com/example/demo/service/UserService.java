@@ -34,10 +34,9 @@ public class UserService {
     }
 
     public void verifyRequest(UserRequest dto) {
-        if (dto.getFullName() == null ||
-                dto.getEmail() == null ||
-                dto.getPassword() == null ||
-                dto.getRole() == null
+        if (dto.getFullName().isEmpty() ||
+                dto.getEmail().isEmpty() ||
+                dto.getPassword().isEmpty()
         ) {
             throw new InvalidCredentialsException("As informações enviadas estão incorretas! Foram recusadas pelo servidor!");
         }
