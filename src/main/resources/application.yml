@@ -1,9 +1,9 @@
 spring:
   application:
-    name: ecommerce-api
+    name: projectjwtapplication
 
   datasource:
-    url: jdbc:postgresql://db:5432/ecommerce_db
+    url: jdbc:postgresql://db:5432/projectjwtapplication
     username: postgres
     password: postgres
   jpa:

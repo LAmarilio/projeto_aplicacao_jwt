@@ -14,7 +14,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ecommerce_db
+      POSTGRES_DB: projectjwtapplication
     volumes:
       - db_data:/var/lib/postgresql
       - ./db.config/init.sql:/docker-entrypoint-initdb.d/init.sql
