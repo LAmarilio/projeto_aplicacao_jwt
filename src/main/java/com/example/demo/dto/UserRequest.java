@@ -16,6 +16,6 @@ public class UserRequest {
     private String email;
     @NotBlank
     private String password;
-    @NotBlank
+
     private Role role;
 }
