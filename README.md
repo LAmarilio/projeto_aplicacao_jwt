@@ -26,7 +26,7 @@
 7. `db.config/init.sql` — script SQL de inicialização
 8. `Dockerfile` e `docker-compose.yml` — opções de containerização
 
-##Como executar (Necessário ter Docker instalado)
+## Como executar (Necessário ter Docker instalado)
 
 1. Clone o repositório:
    ```bash
