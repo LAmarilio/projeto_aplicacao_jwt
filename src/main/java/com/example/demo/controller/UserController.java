@@ -4,14 +4,12 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.dto.UserRequest;
 import com.example.demo.dto.UserResponse;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -32,5 +30,15 @@ public class UserController {
     public ResponseEntity<LoginResponse> loginUser(@RequestBody @Valid LoginRequest dto) {
         LoginResponse auth = userService.effectiveLogin(dto);
         return ResponseEntity.ok(auth);
+    }
+
+    @PostMapping("/authConfirm")
+    public ResponseEntity<String> authConfirm(@RequestHeader("Authorization") String token) {
+        boolean auth = JwtUtil.validateToken(token);
+        if (auth) {
+            return ResponseEntity.ok("Token Valido!");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token invalido!");
+        }
     }
 }
